@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rodolphe – Renne du Père Noël</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+      border: 1px solid #1f2937;
+    }
+
+    /* En-tête profil */
+    .header {
+      background: radial-gradient(circle at top, #ef4444, #7c2d12);
+      padding: 24px 20px 16px 20px;
+      position: relative;
+    }
+
+    .header-cover {
+      position: absolute;
+      inset: 0;
+      opacity: 0.15;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.6) 0, transparent 55%),
+        radial-gradient(circle at 80% 10%, rgba(251,191,36,0.8) 0, transparent 55%),
+        radial-gradient(circle at 50% 90%, rgba(52,211,153,0.7) 0, transparent 60%);
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 999px;
+      background: #f97316;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      border: 3px solid rgba(15,23,42,0.85);
+      box-shadow: 0 0 0 3px rgba(248,250,252,0.2);
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-text h1 span.badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.3);
+      border: 1px solid rgba(15,23,42,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .header-text p {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+    }
+
+    .header-meta {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      opacity: 0.85;
+    }
+
+    .header-meta span {
+      margin-right: 10px;
+    }
+
+    .main {
+      padding: 12px 16px 20px 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 800px) {
+      .main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: rgba(15,23,42,0.95);
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .card.highlight {
+      border: 1px solid #facc15;
+      box-shadow: 0 0 0 1px rgba(250,204,21,0.2);
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .card p {
+      font-size: 0.86rem;
+      line-height: 1.4;
+      color: #e5e7eb;
+    }
+
+    /* Post / publication */
+    .post {
+      background: rgba(15,23,42,0.95);
+      border-radius: 14px;
+      border: 1px solid #1f2937;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px 4px 12px;
+    }
+
+    .post-avatar-small {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: #f97316;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      border: 2px solid rgba(15,23,42,0.85);
+      flex-shrink: 0;
+    }
+
+    .post-user {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .post-meta {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .post-body {
+      padding: 4px 12px 10px 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .post-image {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      display: block;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #111827;
+    }
+
+    .post-footer {
+      padding: 6px 12px 10px 12px;
+      border-top: 1px solid #111827;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: #9ca3af;
+    }
+
+    .reactions span {
+      margin-right: 8px;
+    }
+
+    .comments {
+      border-top: 1px solid #111827;
+      padding: 6px 12px 10px 12px;
+      font-size: 0.78rem;
+      color: #d1d5db;
+    }
+
+    .comment {
+      margin-top: 4px;
+    }
+
+    .comment strong {
+      font-weight: 600;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid #1f2937;
+      font-size: 0.72rem;
+      margin-right: 6px;
+      margin-top: 4px;
+    }
+
+    .sound-banner {
+      background: linear-gradient(90deg, #facc15, #f97316);
+      color: #111827;
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .sound-icon {
+      font-size: 22px;
+    }
+
+    .sound-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .sound-sub {
+      font-size: 0.78rem;
+      margin-top: 2px;
+      opacity: 0.85;
+    }
+
+    .drive-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #0f172a;
+      background: #fef9c3;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .drive-link:hover {
+      background: #fef08a;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- EN-TÊTE PROFIL -->
+    <header class="header">
+      <div class="header-cover"></div>
+      <div class="header-content">
+        <div class="avatar">🦌</div>
+        <div class="header-text">
+          <h1>
+            Rodolphe – Renne du Père Noël
+            <span class="badge">Compte festif</span>
+          </h1>
+          <p>Renne officiel du traîneau, chef ambiance & paillettes du Pôle Nord. Je teste les clochettes, la neige et les ho ho ho.</p>
+          <div class="header-meta">
+            <span>🎄 Pôle Nord</span>
+            <span>🛷 En tournée chaque 24 décembre</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="main">
+      <!-- COLONNE GAUCHE : POSTS -->
+      <section>
+        <!-- BANDEAU SON + LIEN DRIVE -->
+        <div class="sound-banner">
+          <div class="sound-icon">🔊</div>
+          <div>
+            <div class="sound-text">Mets du son, et clique sur le lien Drive en dessous</div>
+            <div class="sound-sub">Appuie sur lecture et laisse la magie de Noël faire le reste ✨</div>
+            <!-- 🔗 Mets ici TON lien Drive -->
+            <a class="drive-link" href="https://drive.google.com/file/d/1tR27yyq9dSgsO1DeAf09qUSQrHkd-H0z/view?usp=drive_link" target="_blank" rel="noopener">
+              ▶ Écouter le message de Rodolphe
+            </a>
+          </div>
+        </div>
+
+        <!-- POST 1 : Publication épinglée -->
+        <article class="post">
+          <div class="post-header">
+            <div class="post-avatar-small">🦌</div>
+            <div>
+              <div class="post-user">Rodolphe – Renne du Père Noël</div>
+              <div class="post-meta">Publication épinglée · 1 décembre · 🎄</div>
+            </div>
+          </div>
+          <div class="post-body">
+            🎅✨ La saison officielle de la magie de Noël est OUVERTE !
+            <br><br>
+            Ici au Pôle Nord, on répète les chants, on polit les clochettes et on graisse les patins du traîneau 🛷.
+            <br><br>
+            Mets du son, installe-toi au chaud… et surveille le ciel, on pourrait bien passer au-dessus de chez toi ce soir 😏
+            <img class="post-image" src="https://images.pexels.com/photos/1661929/pexels-photo-1661929.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Traîneau de Noël dans la nuit">
+          </div>
+          <div class="post-footer">
+            <div class="reactions">
+              <span>❤️ 1,2 k</span>
+              <span>😆 342</span>
+            </div>
+            <div>187 commentaires · 54 partages</div>
+          </div>
+          <div class="comments">
+            <div class="comment"><strong>Lutin Zoé</strong> · On refait Jingle Bells en version rock cette année ? 🤘</div>
+            <div class="comment"><strong>Père Noël</strong> · Tant que je peux encore dire Ho Ho Ho plus fort que la guitare, c’est bon 😄</div>
+          </div>
+        </article>
+
+        <!-- POST 2 : Test du traîneau -->
+        <article class="post">
+          <div class="post-header">
+            <div class="post-avatar-small">🦌</div>
+            <div>
+              <div class="post-user">Rodolphe – Renne du Père Noël</div>
+              <div class="post-meta">3 décembre · 🛷</div>
+            </div>
+          </div>
+          <div class="post-body">
+            Aujourd’hui : test audio COMPLET du traîneau du Père Noël 🔧
+            <br><br>
+            ✔ Bruit des clochettes<br>
+            ✔ Frottement des patins sur la neige<br>
+            ✔ Volume des “Ho Ho Ho” (un peu fort, comme d’hab 😅)
+            <br><br>
+            Tu préfères quoi toi ?<br>
+            🔔 Traîneau tranquille version neige qui crisse<br>
+            🔥 Traîneau avec basses qui font trembler les nuages ?
+            <img class="post-image" src="https://images.pexels.com/photos/754262/pexels-photo-754262.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Renne et traîneau dans la neige">
+          </div>
+          <div class="post-footer">
+            <div class="reactions">
+              <span>👍 624</span>
+              <span>😆 219</span>
+            </div>
+            <div>68 commentaires</div>
+          </div>
+          <div class="comments">
+            <div class="comment"><strong>Elfie la lutine</strong> · Team basses, évidemment 🔥</div>
+            <div class="comment"><strong>Maman Noël</strong> · Tant que ça ne réveille pas les enfants avant minuit…</div>
+          </div>
+        </article>
+
+        <!-- POST 3 : Rodolphe chante -->
+        <article class="post">
+          <div class="post-header">
+            <div class="post-avatar-small">🦌</div>
+            <div>
+              <div class="post-user">Rodolphe – Renne du Père Noël</div>
+              <div class="post-meta">7 décembre · 🎤</div>
+            </div>
+          </div>
+          <div class="post-body">
+            Aujourd’hui au studio : MOI en lead vocal sur “Vive le vent” 😎
+            <br><br>
+            Puissance : 10/10<br>
+            Justesse : 6/10 (mais qui compte vraiment à Noël ?)<br>
+            Enthousiasme : 1000/10
+            <br><br>
+            On garde la version brute ou on auto-tune un peu ? 😏
+            <img class="post-image" src="https://images.pexels.com/photos/1869823/pexels-photo-1869823.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Renne lumineux version scène">
+          </div>
+          <div class="post-footer">
+            <div class="reactions">
+              <span>😂 803</span>
+              <span>❤️ 512</span>
+            </div>
+            <div>94 commentaires</div>
+          </div>
+          <div class="comments">
+            <div class="comment"><strong>Renne Comète</strong> · On veut la version brute, toute la magie sans filtre !</div>
+            <div class="comment"><strong>Lutin Hugo</strong> · On garde, c’est Noël, pas The Voice 🎶</div>
+          </div>
+        </article>
+
+        <!-- POST 4 : Atelier -->
+        <article class="post">
+          <div class="post-header">
+            <div class="post-avatar-small">🦌</div>
+            <div>
+              <div class="post-user">Rodolphe – Renne du Père Noël</div>
+              <div class="post-meta">12 décembre · 🏭</div>
+            </div>
+          </div>
+          <div class="post-body">
+            Dans l’atelier aujourd’hui :
+            <br><br>
+            – Les lutins emballent à toute vitesse 🎁<br>
+            – Les rennes font leurs étirements avant la grande nuit 🦌<br>
+            – Moi, je règle le volume des jouets qui font POUÈT pour éviter les crises de nerfs des parents 😂
+            <br><br>
+            Nouvelle règle du Pôle Nord :<br>
+            « Tout jouet qui dépasse 90 dB sera envoyé en mission spéciale… chez les voisins. »
+            <img class="post-image" src="https://images.pexels.com/photos/1303098/pexels-photo-1303098.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Atelier de Noël avec jouets">
+          </div>
+          <div class="post-footer">
+            <div class="reactions">
+              <span>😆 431</span>
+              <span>👍 299</span>
+            </div>
+            <div>51 commentaires</div>
+          </div>
+          <div class="comments">
+            <div class="comment"><strong>Parent anonyme</strong> · Merci d’avoir pensé à nos oreilles 🙏</div>
+            <div class="comment"><strong>Père Noël</strong> · Je valide la règle ! (En 85 dB max 😉)</div>
+          </div>
+        </article>
+
+        <!-- POST 5 : 24 décembre -->
+        <article class="post">
+          <div class="post-header">
+            <div class="post-avatar-small">🦌</div>
+            <div>
+              <div class="post-user">Rodolphe – Renne du Père Noël</div>
+              <div class="post-meta">24 décembre · 🌙</div>
+            </div>
+          </div>
+          <div class="post-body">
+            C’est ce soir. Tout est prêt. ✨
+            <br><br>
+            Liste des enfants : vérifiée ✅<br>
+            Traîneau : réglé ✅<br>
+            Playlist “Magie de Noël” : chargée ✅
+            <br><br>
+            Si tu entends des clochettes dans le ciel ce soir, mets du son…  
+            On a glissé un petit message dans le vent rien que pour toi 💫
+            <img class="post-image" src="https://images.pexels.com/photos/1708601/pexels-photo-1708601.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Traîneau volant dans le ciel nocturne">
+          </div>
+          <div class="post-footer">
+            <div class="reactions">
+              <span>❤️ 1,8 k</span>
+              <span>😮 427</span>
+            </div>
+            <div>203 commentaires · 77 partages</div>
+          </div>
+          <div class="comments">
+            <div class="comment"><strong>Lutin Nina</strong> · Je pars brancher les haut-parleurs sur les nuages ✨</div>
+            <div class="comment"><strong>Enfant curieux</strong> · Je vais écouter par la fenêtre ce soir 👂</div>
+          </div>
+        </article>
+      </section>
+
+      <!-- COLONNE DROITE : BIO / TAGS -->
+      <aside>
+        <div class="card highlight">
+          <div class="card-title">
+            <span class="dot"></span> À propos de Rodolphe
+          </div>
+          <p>
+            Renne lumineux n°1 du Père Noël,  
+            responsable clochettes, ambiance sonore et test de traîneau.
+            <br><br>
+            Je passe au-dessus de ta maison tous les 24 décembre.  
+            Si tu entends des clochettes… c’est probablement moi 😉
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Thèmes de la page</div>
+          <div>
+            <span class="tag-pill">🦌 Traîneau & rennes</span>
+            <span class="tag-pill">🎶 Musique de Noël</span>
+            <span class="tag-pill">🎁 Atelier du Père Noël</span>
+            <span class="tag-pill">✨ Magie & paillettes</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Message spécial</div>
+          <p>
+            Si tu es ici, c’est que quelqu’un t’a partagé un petit bout de
+            la magie du Pôle Nord.<br><br>
+            Mets ton casque, clique sur le lien, respire un grand coup…
+            et laisse Rodolphe s’occuper du reste 🌟
+          </p>
+        </div>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>
